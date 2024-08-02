@@ -25,8 +25,7 @@ URL Shortener, uzun URL'leri kısaltarak daha kısa ve kullanışlı bağlantıl
 
    ```sh
    npm install
-  ```
-
+   ```
 3. **Sunucuyu Başlatın**
   ```sh
   node server.js
