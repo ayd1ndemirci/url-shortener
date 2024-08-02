@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #cdc8c8;
+            text-align: center;
+            height: 100vh;
+            margin: 0;
+            
+        }
+        .title {
+            color: #0186DA;
+            margin: 50px;
+            font-size: 60px;
+            font-weight: bold;
+        }
+        .container {
+            padding: 10px 30px 5px;
+            width: 758px;
+            height: 333px;
+            border: 1px solid #fff;
+            background-color: #fff;
+            box-shadow: 5px 10px #a39e9e;
+        }
+        input {
+            width: 300px;
+            height: 40px;
+            font-size: 25px;
+            padding: 10px 16px;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        input::placeholder {
+            font-size: 18px;
+        }
+        button {
+            font-size: 20px;
+         
+            background-color: #0186DA;
+            color: #fff;
+            border: none;
+            margin-left: -5px;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #016bb5;
+        }
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+            height: auto;
+        }
+        .subtext {
+            font-size: 22px;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+            font-style: italic;
+        }
+        a:hover {
+            color: #7289da;
+        }
+        .output {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <p class="title">URL Shortener</p>
+        <div class="container">
+            <p style="color: #555555;">Kısaltılacak URL girin</p>
+            <div style="display: flex; justify-content: center;">
+                <input type="text" name="Text" placeholder="Kısaltılacak URL'yi girin" id="textbox">
+                <button onclick="shorten()" class="shorten">Shorten</button>
+            </div>
+            <p class="subtext">URL Shortener, URL'leri kısaltmak ve kısa bağlantılar oluşturmak için oluşturulan bir araçtır</p>
+            <div class="output" id="output"></div>
+        </div>
+        <p>Made with <a href="https://github.com/ayd1ndemirci" target="_blank">ayd1ndemirci</a> & <a href="https://github.com/seri4lize" target="_blank">seri4lize</a></p>
+    </div>
+
+    <script>
+        async function shorten() {
+            const urlInput = document.getElementById('textbox').value;
+            if (urlInput.length <= 0) {
+                alert('Boş URL giremezsiniz');
+                return;
+            }
+            const date = new Date()
+            function formatDate(date) {
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${day}.${month}.${year} ${hours}:${minutes}`;
+            }
+            try {
+                const response = await fetch('http://localhost:3000/shorten', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ longUrl: urlInput }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('output').innerHTML = `Short URL: <a style="color: #016bb5;" href="http://localhost:3000/${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
+                    document.getElementById('textbox').value = '';
+
+                } else {
+                    document.getElementById('output').innerText = 'URL kısaltılırken hata oluştu';
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                document.getElementById('output').innerText = 'URL kısaltılırken hata oluştu';
+            }
+         
+        }
+    </script>
+</body>
+</html>
